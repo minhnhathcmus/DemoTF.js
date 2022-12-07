@@ -65,7 +65,7 @@ async function predict(model) {
     const max_pixel_value = tf.scalar(255);
     const prediction = model.predict(tf.browser.fromPixels(image, num_channels).resizeNearestNeighbor([28, 28]).div(max_pixel_value).expandDims()).argMax(-1);
     //show the prediction to the predicted result id
-    document.getElementById('predicted_result').innerHTML = classNames[prediction.dataSync()[0]];
+    document.getElementById('predicted_result').innerHTML = 'This is the digit ' + classNames[prediction.dataSync()[0]];
 }
 
 //load the pre-trained model
