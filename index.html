@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TensorFlow.js Demo</title>
+
+  <!-- Import TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+  <!-- Import tfjs-vis -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+
+  <!-- Import the data file -->
+  <script src="data.js" type="module"></script>
+
+  <!-- Import the main script file -->
+  <script src="script.js" type="module"></script>
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Train the Handwritten digit recognition model</h2>
+        <button id="train" class="btn btn-primary">Click to train</button>
+        <div id="train-status"></div>
+      </div>
+      <div class="col-md-6">
+        <h2>Upload an image</h2>
+        <input type="file" id="imageLoader" name="imageLoader" accept="image/*">
+        <img id="image" src="" width="300" height="300"/>
+      </div>
+      <div class="col-md-6">
+        <h2>Predict the digit in uploaded image</h2>
+        <button id="predict" class="btn btn-primary" style="display: block">Predict</button>
+        <div id="predicted_result" style="width: 100%; height: 200px"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
