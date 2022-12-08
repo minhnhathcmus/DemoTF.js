@@ -1,0 +1,7 @@
+###Convert SavedModel to TF.js
+
+tensorflowjs_converter --input_format=tf_saved_model --output_node_names='SavedModel_to_TFjs' --saved_model_tags=serve SavedModel_format_model SavedModel_to_TFjs
+
+###Convert Keras h5 to TF.js
+
+tensorflowjs_converter --input_format keras h5_model.h5 keras_h5_to_TFjs

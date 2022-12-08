@@ -1,7 +1,7 @@
 console.log('Hello TensorFlow');
 import {MnistData} from './data.js';
 
-async function showExamples(data) {
+async function showExamples(data) {// Function to show the examples of the dataset
   // Create a container in the visor
   const surface =
     tfvis.visor().surface({ name: 'Input Data Examples', tab: 'Input Data'});  
@@ -30,13 +30,13 @@ async function showExamples(data) {
   }
 }
 
-//display the uploaded image
+// Display the uploaded image
 const imageLoader = document.getElementById('imageLoader');
 imageLoader.addEventListener('change', (e) => {
     document.getElementById('image').src = URL.createObjectURL(e.target.files[0]);
 });
 
-async function run() {
+async function run() {// Function to run the training and evaluate process
   document.getElementById('train-status').innerHTML = 'Training...';
   const data = new MnistData();
   await data.load();
@@ -51,31 +51,60 @@ async function run() {
   await showConfusion(model, data);
   document.getElementById('train-status').innerHTML = 'Training Completed';
   await model.save('localstorage://trained-model');
+  await model.save('downloads://trained-model');
 }
 
-//async function to take the uploaded image and make prediction
-async function predict(model) {
+async function predict(model) {// Function to take the uploaded image and make prediction on it
     if (model == null) {
-        model = await tf.loadLayersModel('localstorage://trained-model');
+        model = await tf.loadGraphModel('SavedModel_to_TFjs/model.json');
+        console.log('Use the default model - SavedModel_to_TFjs model');
     }
-    //get the uploaded image
+    // get the uploaded image
     const image = document.getElementById('image');
-    //make the prediction
+    // make the prediction
     const num_channels = 1;
     const max_pixel_value = tf.scalar(255);
+    document.getElementById('predicted_result').innerHTML = 'Predicting...';
     const prediction = model.predict(tf.browser.fromPixels(image, num_channels).resizeNearestNeighbor([28, 28]).div(max_pixel_value).expandDims()).argMax(-1);
-    //show the prediction to the predicted result id
+    // show the prediction to the predicted result element
     document.getElementById('predicted_result').innerHTML = 'This is the digit ' + classNames[prediction.dataSync()[0]];
 }
 
-//load the pre-trained model
+// Load the choosen model
 var model = null;
-model = await tf.loadLayersModel('localstorage://trained-model');
-console.log(model);
+document.getElementById('model-selector').addEventListener('change', async () => {
+    if (document.getElementById('model-selector').value == 'tf-SavedModel') {
+      try {
+        model = await tf.loadGraphModel('SavedModel_to_TFjs/model.json');
+        console.log(model);
+      } catch (e) {
+        alert('No model found. Please train a model/load the pre-trained model first.');
+        document.getElementById('model-selector').selectedIndex = 0;
+      }
+    }
+    if (document.getElementById('model-selector').value == 'keras-h5') {
+      try {
+        model = await tf.loadLayersModel('keras_h5_to_TFjs/model.json');
+        console.log(model);
+      } catch (e) {
+        alert('No model found. Please train a model/load the pre-trained model first.');
+        document.getElementById('model-selector').selectedIndex = 0;
+      }
+    }
+    if (document.getElementById('model-selector').value == 'tfjs-local-storage') {
+      try {
+        model = await tf.loadLayersModel('localstorage://trained-model');
+        console.log(model);
+      } catch (e) {
+        alert('No model found in local storage. Please train a model first.');
+        document.getElementById('model-selector').selectedIndex = 0;
+      }
+    }
+});
 
 document.getElementById('train').addEventListener('click', () => run());
 
-//take the uploaded image and make prediction when click the Predict button
+// Take the uploaded image and make prediction when click the Predict button
 document.getElementById('predict').addEventListener('click', () => predict(model));
 
 function getModel() {
@@ -190,7 +219,7 @@ function getModel() {
   }
     
   async function showAccuracy(model, data) {
-    const [preds, labels] = doPrediction(model, data);
+    const [preds, labels] = doPrediction(model, data, 10000);
     const classAccuracy = await tfvis.metrics.perClassAccuracy(labels, preds);
     const container = {name: 'Accuracy', tab: 'Evaluation'};
     tfvis.show.perClassAccuracy(container, classAccuracy, classNames);
@@ -199,7 +228,7 @@ function getModel() {
   }
   
   async function showConfusion(model, data) {
-    const [preds, labels] = doPrediction(model, data);
+    const [preds, labels] = doPrediction(model, data, 10000);
     const confusionMatrix = await tfvis.metrics.confusionMatrix(labels, preds);
     const container = {name: 'Confusion Matrix', tab: 'Evaluation'};
     tfvis.render.confusionMatrix(container, {values: confusionMatrix, tickLabels: classNames});
