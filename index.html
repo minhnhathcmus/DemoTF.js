@@ -7,9 +7,9 @@
   <title>TensorFlow.js Demo</title>
 
   <!-- Import TensorFlow.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
   <!-- Import tfjs-vis -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis/dist/tfjs-vis.umd.min.js"></script>
 
   <!-- Import the data file -->
   <script src="data.js" type="module"></script>
@@ -27,15 +27,27 @@
         <button id="train" class="btn btn-primary">Click to train</button>
         <div id="train-status"></div>
       </div>
+
       <div class="col-md-6">
         <h2>Upload an image</h2>
         <input type="file" id="imageLoader" name="imageLoader" accept="image/*">
         <img id="image" src="" width="300" height="300"/>
       </div>
+
       <div class="col-md-6">
-        <h2>Predict the digit in uploaded image</h2>
-        <button id="predict" class="btn btn-primary" style="display: block">Predict</button>
-        <div id="predicted_result" style="width: 100%; height: 200px"></div>
+        <h2>Predict the digit in the uploaded image</h2>
+
+        <label for="model-selector">Choose the model:</label>
+        <select id="model-selector" class="form-control">
+          <option value="" disabled selected>Select one model…</option>
+          <option value="tf-SavedModel">"TensorFlow SavedModel format" model</option>
+          <option value="keras-h5">"Keras H5 format" model</option>
+          <option value="tfjs-local-storage">"TensorFlow.js saved in Local Storage" model</option>
+        </select>
+        
+        <br>
+        <button id="predict" class="btn btn-primary" style="margin-top: 10px; margin-bottom: 10px;">Predict</button>
+        <div id="predicted_result"></div>
       </div>
     </div>
   </div>
